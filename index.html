@@ -1,10 +1,855 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
   <head>
-    <title>my first project</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jinyoung Portfolio Shelf</title>
+    <style>
+      :root {
+        --paper: #f6f3ee;
+        --paper-deep: #ece7de;
+        --ink: #161616;
+        --muted: #6f6a62;
+        --line: rgba(22, 22, 22, 0.42);
+        --shadow: rgba(23, 20, 15, 0.12);
+        --caption-space: 52px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Times New Roman", Georgia, serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(202, 191, 170, 0.23), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(217, 205, 188, 0.3), transparent 25%),
+          linear-gradient(180deg, #fbf8f3 0%, var(--paper) 100%);
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+        background-size: 100% 100%, 48px 48px;
+        mix-blend-mode: soft-light;
+        opacity: 0.38;
+      }
+
+      .page {
+        width: min(1480px, calc(100vw - 48px));
+        margin: 0 auto;
+        padding: 18px 0 72px;
+      }
+
+      .masthead {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        width: 100%;
+      }
+
+      .intro {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .eyebrow,
+      .header-chip,
+      .header-note {
+        display: inline-flex;
+        align-items: center;
+        min-height: 28px;
+        padding: 4px 10px;
+        border: 1px solid rgba(22, 22, 22, 0.16);
+        background: rgba(255, 255, 255, 0.58);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 0.82rem;
+        line-height: 1;
+        font-weight: 400;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .manifesto {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .header-note {
+        color: var(--muted);
+      }
+
+      .shelves {
+        display: grid;
+        gap: 86px;
+      }
+
+      .shelf {
+        position: relative;
+        padding-top: 20px;
+      }
+
+      .shelf::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: var(--caption-space);
+        height: 1px;
+        background: var(--line);
+      }
+
+      .shelf-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(120px, 1fr));
+        gap: 18px;
+        align-items: end;
+      }
+
+      .piece {
+        position: relative;
+        display: grid;
+        gap: 14px;
+      }
+
+      .artwork {
+        position: relative;
+        border: 0.5px solid #111;
+        background: #fff !important;
+        box-shadow: none;
+        overflow: hidden;
+        isolation: isolate;
+      }
+
+      .artwork::before,
+      .artwork::after {
+        content: none !important;
+      }
+
+      .piece:hover .artwork {
+        transform: translateY(-4px);
+        transition: transform 220ms ease;
+      }
+
+      .meta {
+        display: grid;
+        gap: 2px;
+        padding-right: 8px;
+        min-height: 38px;
+        font-family: "Times New Roman", Georgia, serif;
+      }
+
+      .meta .code,
+      .meta .title {
+        font-size: 0.88rem;
+        line-height: 1.05;
+      }
+
+      .meta .code {
+        color: #6f6a62;
+        letter-spacing: 0.02em;
+      }
+
+      .meta .title {
+        color: #2b2824;
+      }
+
+      .portrait {
+        aspect-ratio: 0.74;
+      }
+
+      .poster {
+        aspect-ratio: 0.66;
+      }
+
+      .landscape {
+        aspect-ratio: 1.12;
+      }
+
+      .square {
+        aspect-ratio: 1;
+      }
+
+      .tall {
+        aspect-ratio: 0.58;
+      }
+
+      .s1a {
+        background:
+          linear-gradient(180deg, #cad8ea 0%, #8aa8d1 100%);
+      }
+
+      .s1a::before {
+        content: "LENS";
+        position: absolute;
+        left: 18%;
+        top: 38%;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        font-size: clamp(1.4rem, 2.1vw, 2.5rem);
+        color: #8a3a18;
+        letter-spacing: -0.08em;
+      }
+
+      .s1b {
+        background:
+          radial-gradient(circle at 50% 28%, #f1d5c4 0 16%, transparent 16.5%),
+          radial-gradient(circle at 50% 62%, #e5b79a 0 28%, transparent 28.5%),
+          linear-gradient(180deg, #ebe6da 0%, #d7d0c5 100%);
+      }
+
+      .s1b::before {
+        content: "";
+        position: absolute;
+        inset: 16px;
+        border: 1px solid rgba(145, 102, 88, 0.28);
+      }
+
+      .s1c {
+        background:
+          linear-gradient(180deg, #f8f1e5 0%, #f1e9db 100%);
+      }
+
+      .s1c::before {
+        content: "";
+        position: absolute;
+        left: 14%;
+        right: 14%;
+        top: 11%;
+        bottom: 11%;
+        background:
+          repeating-linear-gradient(
+            180deg,
+            rgba(84, 69, 49, 0.72) 0 1px,
+            transparent 1px 20px
+          );
+        opacity: 0.55;
+      }
+
+      .s1d {
+        background:
+          linear-gradient(180deg, #d5d6da 0%, #e8e8eb 100%);
+      }
+
+      .s1d::before,
+      .s1d::after {
+        content: "";
+        position: absolute;
+        background: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+      }
+
+      .s1d::before {
+        inset: 20% 17%;
+      }
+
+      .s1d::after {
+        inset: 34% 30% 32% 30%;
+        border: 1px solid rgba(0, 0, 0, 0.14);
+      }
+
+      .s1e {
+        background:
+          linear-gradient(180deg, #efe099 0%, #e7cf61 100%);
+      }
+
+      .s1e::before {
+        content: "PLANE\nI-XX";
+        white-space: pre;
+        position: absolute;
+        left: 17%;
+        top: 25%;
+        font-size: clamp(1.2rem, 1.6vw, 2rem);
+        line-height: 0.95;
+        letter-spacing: 0.06em;
+        font-weight: 700;
+        color: #3f3622;
+      }
+
+      .s1f {
+        background:
+          linear-gradient(90deg, #234f82 0 31%, #faf5eb 31% 65%, #f4e0a9 65% 100%);
+      }
+
+      .s1f::before {
+        content: "";
+        position: absolute;
+        inset: 9% 14%;
+        border: 1px solid rgba(43, 49, 62, 0.16);
+      }
+
+      .s1g {
+        background:
+          linear-gradient(180deg, #d3cab8 0%, #8f7f73 100%);
+      }
+
+      .s1g::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(135deg, transparent 0 34%, rgba(21, 18, 15, 0.66) 34% 62%, transparent 62%),
+          radial-gradient(circle at 48% 40%, rgba(252, 225, 200, 0.66) 0 12%, transparent 13%);
+      }
+
+      .s2a {
+        background: linear-gradient(180deg, #99886d 0%, #77614d 100%);
+      }
+
+      .s2a::before {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+      }
+
+      .s2a::after {
+        content: "The Situationist\nIndex";
+        white-space: pre;
+        position: absolute;
+        top: 16%;
+        left: 12%;
+        right: 12%;
+        font-size: 1rem;
+        line-height: 1.15;
+        font-weight: 700;
+        color: #171310;
+        mix-blend-mode: multiply;
+      }
+
+      .s2b {
+        background:
+          linear-gradient(90deg, #efefef 0 48%, #ffffff 48% 52%, #dde5f6 52% 100%);
+      }
+
+      .s2b::before {
+        content: "";
+        position: absolute;
+        inset: 11% 8%;
+        border: 1px solid rgba(56, 74, 108, 0.1);
+      }
+
+      .s2c {
+        background:
+          linear-gradient(180deg, #b6c6d1 0%, #8197a6 100%);
+      }
+
+      .s2c::before {
+        content: "THE POEM\nAT THE\nBOTTOM\nOF THE\nLAKE";
+        white-space: pre;
+        position: absolute;
+        top: 13%;
+        left: 14%;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        font-size: clamp(1.15rem, 1.8vw, 2rem);
+        line-height: 1;
+        color: rgba(22, 22, 22, 0.75);
+      }
+
+      .s2d {
+        background:
+          linear-gradient(180deg, #f4f0e8 0%, #d9d2c6 100%);
+      }
+
+      .s2d::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 62% 62%, rgba(46, 36, 24, 0.7) 0 11%, transparent 11.5%),
+          radial-gradient(circle at 60% 48%, rgba(84, 67, 47, 0.45) 0 22%, transparent 22.5%),
+          linear-gradient(180deg, transparent 0 55%, rgba(0, 0, 0, 0.08) 55% 56%, transparent 56%);
+      }
+
+      .s2e {
+        background: #1d1d1d;
+      }
+
+      .s2e::before {
+        content: "MULLICAN\nDEATH";
+        white-space: pre;
+        position: absolute;
+        top: 6%;
+        left: 10%;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        font-size: clamp(1.8rem, 2.5vw, 3rem);
+        line-height: 0.98;
+        color: #f0f0ee;
+      }
+
+      .s2e::after {
+        content: "";
+        position: absolute;
+        width: 40%;
+        aspect-ratio: 1;
+        left: 30%;
+        top: 34%;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 34% 42%, #1d1d1d 0 10%, transparent 10.5%),
+          radial-gradient(circle at 66% 42%, #1d1d1d 0 10%, transparent 10.5%),
+          radial-gradient(circle at 50% 66%, #1d1d1d 0 7%, transparent 7.5%),
+          #efefed;
+        clip-path: polygon(12% 0, 88% 0, 100% 70%, 50% 100%, 0 70%);
+      }
+
+      .s2f {
+        background:
+          linear-gradient(180deg, #b9927f 0%, #6b5f66 100%);
+      }
+
+      .s2f::before {
+        content: "";
+        position: absolute;
+        inset: 8%;
+        background:
+          radial-gradient(circle at 50% 34%, rgba(255, 227, 211, 0.72) 0 13%, transparent 13.5%),
+          linear-gradient(180deg, transparent 0 46%, rgba(255, 241, 233, 0.35) 46% 100%);
+      }
+
+      .s2f::after {
+        content: "Surface Tension";
+        position: absolute;
+        top: 10%;
+        left: 10%;
+        color: rgba(255, 244, 233, 0.84);
+        font-style: italic;
+        font-size: 1.1rem;
+      }
+
+      .s2g {
+        background:
+          linear-gradient(180deg, #567e51 0%, #3f653f 100%);
+      }
+
+      .s2g::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(145deg, transparent 0 48%, #edd34d 48% 59%, transparent 59%),
+          linear-gradient(180deg, transparent 0 75%, rgba(255, 255, 255, 0.08) 75% 100%);
+      }
+
+      .s3a {
+        background:
+          linear-gradient(180deg, #d8d6d1 0%, #f1f1ef 100%);
+      }
+
+      .s3a::before {
+        content: "B-CAR";
+        position: absolute;
+        top: 12%;
+        left: 14%;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 800;
+        font-size: 1.6rem;
+        color: rgba(33, 33, 33, 0.7);
+      }
+
+      .s3b {
+        background:
+          linear-gradient(180deg, #ece8df 0%, #d3cfc7 100%);
+      }
+
+      .s3b::before {
+        content: "";
+        position: absolute;
+        inset: 17%;
+        background:
+          linear-gradient(90deg, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px 100%),
+          linear-gradient(180deg, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px 100%);
+        background-size: 18px 18px;
+      }
+
+      .s3c {
+        background:
+          linear-gradient(180deg, #f5eed5 0%, #e3d6ae 100%);
+      }
+
+      .s3c::before {
+        content: "";
+        position: absolute;
+        inset: 7% 35%;
+        background: linear-gradient(180deg, #292622 0%, #7d6b5f 100%);
+      }
+
+      .s3c::after {
+        content: "robert law";
+        position: absolute;
+        top: 10%;
+        left: 12%;
+        color: rgba(43, 39, 34, 0.8);
+        font-size: 0.95rem;
+      }
+
+      .s3d {
+        background:
+          linear-gradient(180deg, #2f6cb4 0%, #174583 100%);
+      }
+
+      .s3d::before {
+        content: "MULLICAN";
+        position: absolute;
+        top: 8%;
+        left: 10%;
+        color: #eff3f4;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 800;
+        font-size: clamp(1.5rem, 2vw, 2.6rem);
+        letter-spacing: -0.05em;
+      }
+
+      .s3d::after {
+        content: "";
+        position: absolute;
+        left: 18%;
+        right: 18%;
+        bottom: 14%;
+        top: 34%;
+        background:
+          linear-gradient(90deg, transparent 0 9%, #eef2f4 9% 16%, transparent 16% 24%, #eef2f4 24% 31%, transparent 31% 39%, #eef2f4 39% 46%, transparent 46% 54%, #eef2f4 54% 61%, transparent 61% 69%, #eef2f4 69% 76%, transparent 76% 84%, #eef2f4 84% 91%, transparent 91%),
+          linear-gradient(180deg, #eef2f4 0 13%, transparent 13% 100%);
+        clip-path: polygon(50% 0, 100% 26%, 100% 100%, 0 100%, 0 26%);
+      }
+
+      .s3e {
+        background:
+          linear-gradient(180deg, #c2c5c8 0%, #eef0f1 100%);
+      }
+
+      .s3e::before {
+        content: "";
+        position: absolute;
+        inset: 22%;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+      }
+
+      .s3f {
+        background:
+          linear-gradient(180deg, #7ea2b7 0%, #a6bcc8 100%);
+      }
+
+      .s3f::before {
+        content: "WER\nBUNG";
+        white-space: pre;
+        position: absolute;
+        top: 12%;
+        left: 11%;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 800;
+        font-size: clamp(1.8rem, 2.4vw, 3rem);
+        line-height: 0.86;
+        color: #e8427d;
+      }
+
+      .s3g {
+        background:
+          linear-gradient(180deg, #b7c79a 0%, #97af79 100%);
+      }
+
+      .s3g::before {
+        content: "TOWARDS\nART";
+        white-space: pre;
+        position: absolute;
+        top: 10%;
+        left: 12%;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 800;
+        font-size: clamp(1.7rem, 2.2vw, 2.8rem);
+        line-height: 0.9;
+        color: #20211a;
+      }
+
+      .footer-note {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 58px;
+        padding-top: 18px;
+        border-top: 1px solid rgba(22, 22, 22, 0.12);
+        color: var(--muted);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 0.82rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      @media (max-width: 1180px) {
+        .shelf-grid {
+          grid-template-columns: repeat(4, minmax(120px, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .page {
+          width: min(100vw - 24px, 1480px);
+          padding-top: 12px;
+        }
+
+        .masthead {
+          flex-wrap: wrap;
+          align-items: flex-start;
+          gap: 10px;
+          margin-bottom: 16px;
+        }
+
+        .intro,
+        .manifesto {
+          flex-wrap: wrap;
+        }
+
+        .shelves {
+          gap: 54px;
+        }
+
+        .shelf::before {
+          bottom: 72px;
+        }
+
+        .shelf-grid {
+          grid-template-columns: repeat(2, minmax(120px, 1fr));
+          gap: 18px 14px;
+        }
+
+        .footer-note {
+          flex-direction: column;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>Hello Jinyoung</h1>
-    <p>테스트중</p>
+    <main class="page">
+      <header class="masthead">
+        <section class="intro">
+          <div class="eyebrow">Portfolio Display</div>
+          <h1>Jinyoung Archive</h1>
+        </section>
+
+        <section class="manifesto" aria-label="header details">
+          <div class="header-chip">3 Shelves</div>
+          <div class="header-note">Selected Works / Graphic, Object, Motion</div>
+        </section>
+      </header>
+
+      <section class="shelves" aria-label="portfolio shelves">
+        <article class="shelf">
+          <div class="shelf-grid">
+            <figure class="piece">
+              <div class="artwork poster s1a"></div>
+              <figcaption class="meta">
+                <span class="code">01-24</span>
+                <span class="title">Lens / Editorial Identity</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork portrait s1b"></div>
+              <figcaption class="meta">
+                <span class="code">BB09</span>
+                <span class="title">Portrait Notes / Campaign Study</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork poster s1c"></div>
+              <figcaption class="meta">
+                <span class="code">54-8</span>
+                <span class="title">Method Sheet / Publication Grid</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork square s1d"></div>
+              <figcaption class="meta">
+                <span class="code">65-4</span>
+                <span class="title">Printed Card / Object Branding</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork landscape s1e"></div>
+              <figcaption class="meta">
+                <span class="code">6785</span>
+                <span class="title">Plane I-XX / Exhibition Title</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork portrait s1f"></div>
+              <figcaption class="meta">
+                <span class="code">23-4</span>
+                <span class="title">Dieu / Book Object System</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork portrait s1g"></div>
+              <figcaption class="meta">
+                <span class="code">3-3</span>
+                <span class="title">Various Virgins / Poster Collage</span>
+              </figcaption>
+            </figure>
+          </div>
+        </article>
+
+        <article class="shelf">
+          <div class="shelf-grid">
+            <figure class="piece">
+              <div class="artwork poster s2a"></div>
+              <figcaption class="meta">
+                <span class="code">SS88</span>
+                <span class="title">Situationist Index / Research Volume</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork landscape s2b"></div>
+              <figcaption class="meta">
+                <span class="code">345</span>
+                <span class="title">Filliou / Folded Spread Study</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork poster s2c"></div>
+              <figcaption class="meta">
+                <span class="code">001AB</span>
+                <span class="title">Bottom of the Lake / Jacket Design</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork landscape s2d"></div>
+              <figcaption class="meta">
+                <span class="code">98DF</span>
+                <span class="title">Archive Portrait / Invitation Card</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork poster s2e"></div>
+              <figcaption class="meta">
+                <span class="code">000</span>
+                <span class="title">Mullican Death / Poster Rework</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork portrait s2f"></div>
+              <figcaption class="meta">
+                <span class="code">TT5</span>
+                <span class="title">Surface Tension / Art Direction</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork poster s2g"></div>
+              <figcaption class="meta">
+                <span class="code">999U</span>
+                <span class="title">Yellow Beam / Visual Essay</span>
+              </figcaption>
+            </figure>
+          </div>
+        </article>
+
+        <article class="shelf">
+          <div class="shelf-grid">
+            <figure class="piece">
+              <div class="artwork landscape s3a"></div>
+              <figcaption class="meta">
+                <span class="code">v1.2</span>
+                <span class="title">B-Car / Interface Object</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork landscape s3b"></div>
+              <figcaption class="meta">
+                <span class="code">0910</span>
+                <span class="title">Proof Set / Modular Grid</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork poster s3c"></div>
+              <figcaption class="meta">
+                <span class="code">RL84</span>
+                <span class="title">Robert Law / Gallery Flyer</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork poster s3d"></div>
+              <figcaption class="meta">
+                <span class="code">M-12</span>
+                <span class="title">Mullican / Spatial Banner</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork square s3e"></div>
+              <figcaption class="meta">
+                <span class="code">SJ-77</span>
+                <span class="title">Saman / Printed Matter</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork portrait s3f"></div>
+              <figcaption class="meta">
+                <span class="code">WB88</span>
+                <span class="title">Werbung / Motion Poster</span>
+              </figcaption>
+            </figure>
+
+            <figure class="piece">
+              <div class="artwork poster s3g"></div>
+              <figcaption class="meta">
+                <span class="code">ART5</span>
+                <span class="title">Towards Art / Publication Series</span>
+              </figcaption>
+            </figure>
+          </div>
+        </article>
+      </section>
+
+      <footer class="footer-note">
+        <span>Jinyoung Portfolio Shelf</span>
+        <span>Selected Works / Graphic, Object, Motion, Identity</span>
+      </footer>
+    </main>
   </body>
 </html>
